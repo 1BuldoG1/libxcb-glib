@@ -25,7 +25,9 @@
 #include <xcb/xcb.h>
 
 #include <libxcb-glib-types.h>
+#include <libxcb-glib-window.h>
 #include <libxcb-glib-source.h>
+#include "libxcb-glib-source-internal.h"
 
 struct _GXcbSource {
     GSource source;
@@ -33,6 +35,7 @@ struct _GXcbSource {
     xcb_connection_t *connection;
     GPollFD fd;
     GQueue *queue;
+    GHashTable *windows;
 };
 
 static void
@@ -87,6 +90,7 @@ _g_xcb_source_finalize(GSource *source)
 {
     GXcbSource *self = (GXcbSource *)source;
 
+    g_hash_table_unref(self->windows);
     g_queue_foreach(self->queue, _g_xcb_source_event_free, NULL);
     g_queue_free(self->queue);
 
@@ -116,7 +120,6 @@ g_xcb_source_new(GMainContext *context, const gchar *display, gint *screen)
 
     source = g_xcb_source_new_for_connection(context, connection);
     source->connection_owned = TRUE;
-
     return source;
 }
 
@@ -129,6 +132,7 @@ g_xcb_source_new_for_connection(GMainContext *context, xcb_connection_t *connect
 
     source->connection = connection;
     source->queue = g_queue_new();
+    source->windows = g_hash_table_new(NULL, NULL);
 
     source->fd.fd = xcb_get_file_descriptor(connection);
     source->fd.events = G_IO_IN;
@@ -155,4 +159,16 @@ xcb_connection_t *
 g_xcb_source_get_connection(GXcbSource *self)
 {
     return self->connection;
+}
+
+void
+g_xcb_source_attach_window(GXcbSource *self, GXcbWindow *window)
+{
+    g_hash_table_insert(self->windows, GUINT_TO_POINTER(g_xcb_window_get_window(window)), window);
+}
+
+void
+g_xcb_source_detach_window(GXcbSource *self, GXcbWindow *window)
+{
+    g_hash_table_remove(self->windows, GUINT_TO_POINTER(g_xcb_window_get_window(window)));
 }

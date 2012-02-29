@@ -24,14 +24,16 @@
 #error "Only <libxcb-glib.h> can be included directly."
 #endif
 
-#ifndef __LIBXCB_GLIB_TYPES_H__
-#define __LIBXCB_GLIB_TYPES_H__
+#ifndef __LIBXCB_GLIB_WINDOW_H__
+#define __LIBXCB_GLIB_WINDOW_H__
 
 G_BEGIN_DECLS
 
-typedef struct _GXcbSource GXcbSource;
-typedef struct _GXcbWindow GXcbWindow;
+GXcbWindow *g_xcb_window_new(GXcbSource *source, guint8 depth, xcb_window_t parent, gint16 x, gint16 y, guint16 width, guint16 height, guint16 border_width, guint16 _class, xcb_visualid_t visual, guint32 value_mask, const guint32 *value_list);
+void g_xcb_window_free(GXcbWindow *window);
+
+xcb_window_t g_xcb_window_get_window(GXcbWindow *window);
 
 G_END_DECLS
 
-#endif /* __LIBXCB_GLIB_TYPES_H__ */
+#endif /* __LIBXCB_GLIB_WINDOW_H__ */

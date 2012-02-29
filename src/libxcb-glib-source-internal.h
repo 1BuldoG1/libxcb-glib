@@ -20,18 +20,14 @@
  *
  */
 
-#if ! defined(__LIBXCB_GLIB_H_INSIDE__) && ! defined(LIBXCB_GLIB_COMPILATION)
-#error "Only <libxcb-glib.h> can be included directly."
-#endif
-
-#ifndef __LIBXCB_GLIB_TYPES_H__
-#define __LIBXCB_GLIB_TYPES_H__
+#ifndef __LIBXCB_GLIB_SOURCE_INTERNAL_H__
+#define __LIBXCB_GLIB_SOURCE_INTERNAL_H__
 
 G_BEGIN_DECLS
 
-typedef struct _GXcbSource GXcbSource;
-typedef struct _GXcbWindow GXcbWindow;
+void g_xcb_source_attach_window(GXcbSource *source, GXcbWindow *window);
+void g_xcb_source_detach_window(GXcbSource *source, GXcbWindow *window);
 
 G_END_DECLS
 
-#endif /* __LIBXCB_GLIB_TYPES_H__ */
+#endif /* __LIBXCB_GLIB_SOURCE_INTERNAL_H__ */

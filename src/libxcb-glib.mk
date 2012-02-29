@@ -6,6 +6,7 @@ lib_LTLIBRARIES += \
 	libxcb-glib.la
 
 pkginclude_HEADERS += \
+	include/libxcb-glib-window.h \
 	include/libxcb-glib-source.h \
 	include/libxcb-glib-types.h \
 	include/libxcb-glib.h
@@ -14,6 +15,7 @@ EXTRA_DIST += \
 	src/libxcb-glib.sym
 
 libxcb_glib_la_SOURCES = \
+	src/libxcb-glib-window.c \
 	src/libxcb-glib-source.c
 
 libxcb_glib_la_CFLAGS = \

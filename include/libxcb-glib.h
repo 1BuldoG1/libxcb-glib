@@ -27,6 +27,7 @@
 
 #include <libxcb-glib-types.h>
 #include <libxcb-glib-source.h>
+#include <libxcb-glib-window.h>
 
 #undef __LIBXCB_GLIB_H_INSIDE__
 
