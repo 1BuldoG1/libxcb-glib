@@ -20,24 +20,13 @@
  *
  */
 
-#if ! defined(__LIBXCB_GLIB_H_INSIDE__) && ! defined(LIBXCB_GLIB_COMPILATION)
-#error "Only <libxcb-glib.h> can be included directly."
-#endif
-
-#ifndef __LIBXCB_GLIB_WINDOW_H__
-#define __LIBXCB_GLIB_WINDOW_H__
+#ifndef __LIBXCB_GLIB_WINDOW_INTERNAL_H__
+#define __LIBXCB_GLIB_WINDOW_INTERNAL_H__
 
 G_BEGIN_DECLS
 
-GXcbWindow *g_xcb_window_new(GXcbSource *source, guint8 depth, xcb_window_t parent, gint16 x, gint16 y, guint16 width, guint16 height, guint16 border_width, guint16 _class, xcb_visualid_t visual, guint32 value_mask, const guint32 *value_list, gpointer user_data);
-void g_xcb_window_free(GXcbWindow *window);
-
-xcb_window_t g_xcb_window_get_window(GXcbWindow *window);
-
-typedef void (*GXcbWindowExposeEventCallback)(GXcbWindow *window, xcb_expose_event_t *event, gpointer user_data);
-
-void g_xcb_window_set_expose_event_callback(GXcbWindow *window, GXcbWindowExposeEventCallback callback);
+void g_xcb_window_expose_event(GXcbWindow *window, xcb_expose_event_t *event);
 
 G_END_DECLS
 
-#endif /* __LIBXCB_GLIB_WINDOW_H__ */
+#endif /* __LIBXCB_GLIB_WINDOW_INTERNAL_H__ */

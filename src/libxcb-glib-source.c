@@ -26,6 +26,7 @@
 
 #include <libxcb-glib-types.h>
 #include <libxcb-glib-window.h>
+#include "libxcb-glib-window-internal.h"
 #include <libxcb-glib-source.h>
 #include "libxcb-glib-source-internal.h"
 
@@ -77,6 +78,16 @@ _g_xcb_source_dispatch(GSource *source, GSourceFunc callback, gpointer user_data
     event = g_queue_pop_head(self->queue);
     switch ( event->response_type & ~0x80 )
     {
+    case XCB_EXPOSE:
+    {
+        xcb_expose_event_t *e = (xcb_expose_event_t *)event;
+        GXcbWindow *window;
+
+        window = g_hash_table_lookup(self->windows, GUINT_TO_POINTER(e->window));
+        if ( window != NULL )
+            g_xcb_window_expose_event(window, e);
+    }
+    break;
     default:
     break;
     }

@@ -28,20 +28,24 @@
 #include <libxcb-glib-source.h>
 #include "libxcb-glib-source-internal.h"
 #include <libxcb-glib-window.h>
+#include "libxcb-glib-window-internal.h"
 
 struct _GXcbWindow {
     GXcbSource *source;
     xcb_window_t window;
+    gpointer user_data;
+    GXcbWindowExposeEventCallback expose_event_callback;
 };
 
 GXcbWindow *
-g_xcb_window_new(GXcbSource *source, guint8 depth, xcb_window_t parent, gint16 x, gint16 y, guint16 width, guint16 height, guint16 border_width, guint16 _class, xcb_visualid_t visual, guint32 value_mask, const guint32 *value_list)
+g_xcb_window_new(GXcbSource *source, guint8 depth, xcb_window_t parent, gint16 x, gint16 y, guint16 width, guint16 height, guint16 border_width, guint16 _class, xcb_visualid_t visual, guint32 value_mask, const guint32 *value_list, gpointer user_data)
 {
     GXcbWindow *window;
 
     window = g_new0(GXcbWindow, 1);
 
     window->source = source;
+    window->user_data = user_data;
 
     window->window = xcb_generate_id(g_xcb_source_get_connection(source));
     xcb_create_window(g_xcb_source_get_connection(source), depth, window->window, parent, x, y, width, height, border_width, _class, visual, value_mask, value_list);
@@ -65,4 +69,17 @@ xcb_window_t
 g_xcb_window_get_window(GXcbWindow *self)
 {
     return self->window;
+}
+
+void
+g_xcb_window_set_expose_event_callback(GXcbWindow *window, GXcbWindowExposeEventCallback callback)
+{
+    window->expose_event_callback = callback;
+}
+
+void
+g_xcb_window_expose_event(GXcbWindow *window, xcb_expose_event_t *event)
+{
+    if ( window->expose_event_callback != NULL )
+        window->expose_event_callback(window, event, window->user_data);
 }
