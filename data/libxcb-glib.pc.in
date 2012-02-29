@@ -1,0 +1,11 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+pkgincludedir=@includedir@/@PACKAGE@
+
+Name: libxcb-glib
+Description: Library to integrate XCB nicely with GLib
+Version: @VERSION@
+Requires: glib-2.0
+Libs: -L${libdir} -lxcb-glib
+Cflags: -I${pkgincludedir}

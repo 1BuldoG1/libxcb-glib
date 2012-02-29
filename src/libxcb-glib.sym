@@ -1,0 +1,8 @@
+LIBXCB_GLIB {
+global:
+    g_xcb_source_get_connection;
+    g_xcb_source_new;
+    g_xcb_source_new_for_connection;
+local:
+    *;
+};
