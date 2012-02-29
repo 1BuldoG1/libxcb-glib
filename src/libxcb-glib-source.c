@@ -139,6 +139,18 @@ g_xcb_source_new_for_connection(GMainContext *context, xcb_connection_t *connect
     return source;
 }
 
+void
+g_xcb_source_ref(GXcbSource *self)
+{
+    g_source_ref((GSource *)self);
+}
+
+void
+g_xcb_source_unref(GXcbSource *self)
+{
+    g_source_unref((GSource *)self);
+}
+
 xcb_connection_t *
 g_xcb_source_get_connection(GXcbSource *self)
 {

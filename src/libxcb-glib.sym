@@ -3,6 +3,8 @@ global:
     g_xcb_source_get_connection;
     g_xcb_source_new;
     g_xcb_source_new_for_connection;
+    g_xcb_source_ref;
+    g_xcb_source_unref;
 local:
     *;
 };

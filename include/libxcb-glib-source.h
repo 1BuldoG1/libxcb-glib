@@ -31,6 +31,8 @@ G_BEGIN_DECLS
 
 GXcbSource *g_xcb_source_new(GMainContext *context, const gchar *display, gint *screen);
 GXcbSource *g_xcb_source_new_for_connection(GMainContext *context, xcb_connection_t *connection);
+void g_xcb_source_ref(GXcbSource *self);
+void g_xcb_source_unref(GXcbSource *self);
 
 xcb_connection_t *g_xcb_source_get_connection(GXcbSource *source);
 
