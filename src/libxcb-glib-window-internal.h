@@ -26,6 +26,8 @@
 G_BEGIN_DECLS
 
 void g_xcb_window_expose_event(GXcbWindow *window, xcb_expose_event_t *event);
+void g_xcb_window_button_press_event(GXcbWindow *window, xcb_button_press_event_t *event);
+void g_xcb_window_button_release_event(GXcbWindow *window, xcb_button_release_event_t *event);
 
 G_END_DECLS
 

@@ -35,6 +35,8 @@ struct _GXcbWindow {
     xcb_window_t window;
     gpointer user_data;
     GXcbWindowExposeEventCallback expose_event_callback;
+    GXcbWindowButtonPressEventCallback button_press_event_callback;
+    GXcbWindowButtonReleaseEventCallback button_release_event_callback;
 };
 
 GXcbWindow *
@@ -78,8 +80,34 @@ g_xcb_window_set_expose_event_callback(GXcbWindow *window, GXcbWindowExposeEvent
 }
 
 void
+g_xcb_window_set_button_press_event_callback(GXcbWindow *window, GXcbWindowButtonPressEventCallback callback)
+{
+    window->button_press_event_callback = callback;
+}
+
+void
+g_xcb_window_set_button_release_event_callback(GXcbWindow *window, GXcbWindowButtonReleaseEventCallback callback)
+{
+    window->button_release_event_callback = callback;
+}
+
+void
 g_xcb_window_expose_event(GXcbWindow *window, xcb_expose_event_t *event)
 {
     if ( window->expose_event_callback != NULL )
         window->expose_event_callback(window, event, window->user_data);
+}
+
+void
+g_xcb_window_button_press_event(GXcbWindow *window, xcb_button_press_event_t *event)
+{
+    if ( window->button_press_event_callback != NULL )
+        window->button_press_event_callback(window, event, window->user_data);
+}
+
+void
+g_xcb_window_button_release_event(GXcbWindow *window, xcb_button_release_event_t *event)
+{
+    if ( window->button_release_event_callback != NULL )
+        window->button_release_event_callback(window, event, window->user_data);
 }

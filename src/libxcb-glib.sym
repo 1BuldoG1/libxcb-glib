@@ -8,6 +8,8 @@ global:
     g_xcb_window_free;
     g_xcb_window_get_window;
     g_xcb_window_new;
+    g_xcb_window_set_button_press_event_callback;
+    g_xcb_window_set_button_release_event_callback;
     g_xcb_window_set_expose_event_callback;
 local:
     *;

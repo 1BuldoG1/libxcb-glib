@@ -88,6 +88,26 @@ _g_xcb_source_dispatch(GSource *source, GSourceFunc callback, gpointer user_data
             g_xcb_window_expose_event(window, e);
     }
     break;
+    case XCB_BUTTON_PRESS:
+    {
+        xcb_button_press_event_t *e = (xcb_button_press_event_t *)event;
+        GXcbWindow *window;
+
+        window = g_hash_table_lookup(self->windows, GUINT_TO_POINTER(e->event));
+        if ( window != NULL )
+            g_xcb_window_button_press_event(window, e);
+    }
+    break;
+    case XCB_BUTTON_RELEASE:
+    {
+        xcb_button_release_event_t *e = (xcb_button_release_event_t *)event;
+        GXcbWindow *window;
+
+        window = g_hash_table_lookup(self->windows, GUINT_TO_POINTER(e->event));
+        if ( window != NULL )
+            g_xcb_window_button_release_event(window, e);
+    }
+    break;
     default:
     break;
     }

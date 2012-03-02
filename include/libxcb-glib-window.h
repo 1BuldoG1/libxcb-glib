@@ -35,8 +35,12 @@ void g_xcb_window_free(GXcbWindow *window);
 xcb_window_t g_xcb_window_get_window(GXcbWindow *window);
 
 typedef void (*GXcbWindowExposeEventCallback)(GXcbWindow *window, xcb_expose_event_t *event, gpointer user_data);
+typedef void (*GXcbWindowButtonPressEventCallback)(GXcbWindow *window, xcb_button_press_event_t *event, gpointer user_data);
+typedef void (*GXcbWindowButtonReleaseEventCallback)(GXcbWindow *window, xcb_button_release_event_t *event, gpointer user_data);
 
 void g_xcb_window_set_expose_event_callback(GXcbWindow *window, GXcbWindowExposeEventCallback callback);
+void g_xcb_window_set_button_press_event_callback(GXcbWindow *window, GXcbWindowButtonPressEventCallback callback);
+void g_xcb_window_set_button_release_event_callback(GXcbWindow *window, GXcbWindowButtonReleaseEventCallback callback);
 
 G_END_DECLS
 
