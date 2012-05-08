@@ -15,7 +15,9 @@ EXTRA_DIST += \
 	src/libxcb-glib.sym
 
 libxcb_glib_la_SOURCES = \
+	src/libxcb-glib-window-internal.h \
 	src/libxcb-glib-window.c \
+	src/libxcb-glib-source-internal.h \
 	src/libxcb-glib-source.c
 
 libxcb_glib_la_CFLAGS = \
