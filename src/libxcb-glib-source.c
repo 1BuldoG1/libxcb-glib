@@ -24,19 +24,16 @@
 #include <glib.h>
 #include <xcb/xcb.h>
 
-#include <libxcb-glib-types.h>
-#include <libxcb-glib-window.h>
-#include "libxcb-glib-window-internal.h"
-#include <libxcb-glib-source.h>
-#include "libxcb-glib-source-internal.h"
+#include <libxcb-glib.h>
 
 struct _GXcbSource {
     GSource source;
     gboolean connection_owned;
     xcb_connection_t *connection;
     GPollFD fd;
+    GXcbEventCallback callback;
+    gpointer user_data;
     GQueue *queue;
-    GHashTable *windows;
 };
 
 static void
@@ -76,41 +73,7 @@ _g_xcb_source_dispatch(GSource *source, GSourceFunc callback, gpointer user_data
     xcb_generic_event_t *event;
 
     event = g_queue_pop_head(self->queue);
-    switch ( event->response_type & ~0x80 )
-    {
-    case XCB_EXPOSE:
-    {
-        xcb_expose_event_t *e = (xcb_expose_event_t *)event;
-        GXcbWindow *window;
-
-        window = g_hash_table_lookup(self->windows, GUINT_TO_POINTER(e->window));
-        if ( window != NULL )
-            g_xcb_window_expose_event(window, e);
-    }
-    break;
-    case XCB_BUTTON_PRESS:
-    {
-        xcb_button_press_event_t *e = (xcb_button_press_event_t *)event;
-        GXcbWindow *window;
-
-        window = g_hash_table_lookup(self->windows, GUINT_TO_POINTER(e->event));
-        if ( window != NULL )
-            g_xcb_window_button_press_event(window, e);
-    }
-    break;
-    case XCB_BUTTON_RELEASE:
-    {
-        xcb_button_release_event_t *e = (xcb_button_release_event_t *)event;
-        GXcbWindow *window;
-
-        window = g_hash_table_lookup(self->windows, GUINT_TO_POINTER(e->event));
-        if ( window != NULL )
-            g_xcb_window_button_release_event(window, e);
-    }
-    break;
-    default:
-    break;
-    }
+    ((GXcbEventCallback)callback)(event, user_data);
     _g_xcb_source_event_free(event, NULL);
 
     return TRUE;
@@ -121,7 +84,6 @@ _g_xcb_source_finalize(GSource *source)
 {
     GXcbSource *self = (GXcbSource *)source;
 
-    g_hash_table_unref(self->windows);
     g_queue_foreach(self->queue, _g_xcb_source_event_free, NULL);
     g_queue_free(self->queue);
 
@@ -137,8 +99,10 @@ static GSourceFuncs _g_xcb_source_funcs = {
 };
 
 GXcbSource *
-g_xcb_source_new(GMainContext *context, const gchar *display, gint *screen)
+g_xcb_source_new(GMainContext *context, const gchar *display, gint *screen, GXcbEventCallback callback, gpointer user_data, GDestroyNotify destroy_func)
 {
+    g_return_val_if_fail(callback != NULL, NULL);
+
     xcb_connection_t *connection;
     GXcbSource *source;
 
@@ -149,27 +113,30 @@ g_xcb_source_new(GMainContext *context, const gchar *display, gint *screen)
         return NULL;
     }
 
-    source = g_xcb_source_new_for_connection(context, connection);
+    source = g_xcb_source_new_for_connection(context, connection, callback, user_data, destroy_func);
     source->connection_owned = TRUE;
     return source;
 }
 
 GXcbSource *
-g_xcb_source_new_for_connection(GMainContext *context, xcb_connection_t *connection)
+g_xcb_source_new_for_connection(GMainContext *context, xcb_connection_t *connection, GXcbEventCallback callback, gpointer user_data, GDestroyNotify destroy_func)
 {
+    g_return_val_if_fail(callback != NULL, NULL);
+
     GXcbSource *source;
 
     source = (GXcbSource *)g_source_new(&_g_xcb_source_funcs, sizeof(GXcbSource));
 
     source->connection = connection;
     source->queue = g_queue_new();
-    source->windows = g_hash_table_new(NULL, NULL);
 
     source->fd.fd = xcb_get_file_descriptor(connection);
     source->fd.events = G_IO_IN;
 
     g_source_add_poll((GSource *)source, &source->fd);
     g_source_attach((GSource *)source, context);
+
+    g_source_set_callback((GSource *)source, (GSourceFunc)callback, user_data, destroy_func);
 
     return source;
 }
@@ -190,16 +157,4 @@ xcb_connection_t *
 g_xcb_source_get_connection(GXcbSource *self)
 {
     return self->connection;
-}
-
-void
-g_xcb_source_attach_window(GXcbSource *self, GXcbWindow *window)
-{
-    g_hash_table_insert(self->windows, GUINT_TO_POINTER(g_xcb_window_get_window(window)), window);
-}
-
-void
-g_xcb_source_detach_window(GXcbSource *self, GXcbWindow *window)
-{
-    g_hash_table_remove(self->windows, GUINT_TO_POINTER(g_xcb_window_get_window(window)));
 }
