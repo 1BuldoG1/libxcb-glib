@@ -11,7 +11,6 @@ lib_LTLIBRARIES =
 pkginclude_HEADERS =
 pkgconfig_DATA =
 
-EXTRA_DIST =
 CLEANFILES =
 
 AM_CFLAGS += \
