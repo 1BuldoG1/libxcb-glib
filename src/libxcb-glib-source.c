@@ -59,6 +59,9 @@ _g_xcb_source_check(GSource *source)
     {
         xcb_generic_event_t *event;
 
+        if ( xcb_connection_has_error(self->connection) )
+            return TRUE;
+
         while ( ( event = xcb_poll_for_event(self->connection) ) != NULL )
             g_queue_push_tail(self->queue, event);
     }
@@ -71,6 +74,9 @@ _g_xcb_source_dispatch(GSource *source, GSourceFunc callback, gpointer user_data
 {
     GXcbSource *self = (GXcbSource *)source;
     xcb_generic_event_t *event;
+
+    if ( xcb_connection_has_error(self->connection) )
+        return FALSE;
 
     event = g_queue_pop_head(self->queue);
     ((GXcbEventCallback)callback)(event, user_data);
