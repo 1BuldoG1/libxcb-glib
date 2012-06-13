@@ -150,17 +150,23 @@ g_xcb_source_new_for_connection(GMainContext *context, xcb_connection_t *connect
 void
 g_xcb_source_ref(GXcbSource *self)
 {
+    g_return_if_fail(self != NULL);
+
     g_source_ref((GSource *)self);
 }
 
 void
 g_xcb_source_unref(GXcbSource *self)
 {
+    g_return_if_fail(self != NULL);
+
     g_source_unref((GSource *)self);
 }
 
 xcb_connection_t *
 g_xcb_source_get_connection(GXcbSource *self)
 {
+    g_return_val_if_fail(self != NULL, NULL);
+
     return self->connection;
 }
