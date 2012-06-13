@@ -28,12 +28,14 @@ G_BEGIN_DECLS
 typedef struct _GXcbSource GXcbSource;
 
 typedef void (*GXcbEventCallback)(xcb_generic_event_t *event, gpointer user_data);
+typedef void (*GXcbErrorCallback)(gpointer user_data);
 
 GXcbSource *g_xcb_source_new(GMainContext *context, const gchar *display, gint *screen, GXcbEventCallback callback, gpointer user_data, GDestroyNotify destroy_func);
 GXcbSource *g_xcb_source_new_for_connection(GMainContext *context, xcb_connection_t *connection, GXcbEventCallback callback, gpointer user_data, GDestroyNotify destroy_func);
 void g_xcb_source_ref(GXcbSource *self);
 void g_xcb_source_unref(GXcbSource *self);
 
+void g_xcb_source_set_error_callback(GXcbSource *source, GXcbErrorCallback callback);
 xcb_connection_t *g_xcb_source_get_connection(GXcbSource *source);
 
 G_END_DECLS

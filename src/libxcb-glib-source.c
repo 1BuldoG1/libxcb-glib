@@ -31,8 +31,7 @@ struct _GXcbSource {
     gboolean connection_owned;
     xcb_connection_t *connection;
     GPollFD fd;
-    GXcbEventCallback callback;
-    gpointer user_data;
+    GXcbErrorCallback error_callback;
     GQueue *queue;
 };
 
@@ -76,7 +75,10 @@ _g_xcb_source_dispatch(GSource *source, GSourceFunc callback, gpointer user_data
     xcb_generic_event_t *event;
 
     if ( xcb_connection_has_error(self->connection) )
+    {
+        self->error_callback(user_data);
         return FALSE;
+    }
 
     event = g_queue_pop_head(self->queue);
     ((GXcbEventCallback)callback)(event, user_data);
@@ -161,6 +163,14 @@ g_xcb_source_unref(GXcbSource *self)
     g_return_if_fail(self != NULL);
 
     g_source_unref((GSource *)self);
+}
+
+void
+g_xcb_source_set_error_callback(GXcbSource *self, GXcbErrorCallback callback)
+{
+    g_return_if_fail(self != NULL);
+
+    self->error_callback = callback;
 }
 
 xcb_connection_t *
