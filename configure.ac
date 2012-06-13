@@ -41,12 +41,6 @@ fi
 PKG_CHECK_MODULES(GLIB, [glib-2.0 >= $glib_min_version])
 PKG_CHECK_MODULES(XCB, [xcb])
 
-# Debug flags
-AC_ARG_ENABLE(debug, AS_HELP_STRING([--enable-debug], [Enable debug]), enable_debug=$enableval, enable_debug=no)
-if test x$enable_debug = xyes; then
-    AC_DEFINE([DEBUG], [1], [Activate debug mode])
-    AM_CFLAGS="${AM_CFLAGS} -O0 -ggdb3"
-fi
 AC_SUBST(AM_CFLAGS)
 AC_SUBST(AM_LDFLAGS)
 
