@@ -22,7 +22,9 @@ AC_SUBST(GETTEXT_PACKAGE)
 
 AC_PROG_INSTALL
 
-glib_min_version="2.28.0"
+glib_min_major="2"
+glib_min_minor="28"
+glib_min_version="${glib_min_major}.${glib_min_minor}"
 
 AM_CFLAGS="-Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers"
 AM_LDFLAGS=""
@@ -36,6 +38,8 @@ if test x$enable_git_version = xyes; then
 fi
 
 PKG_CHECK_MODULES(GLIB, [glib-2.0 >= $glib_min_version])
+AC_DEFINE_UNQUOTED([GLIB_VERSION_MIN_REQUIRED], [(G_ENCODE_VERSION(${glib_min_major},${glib_min_minor}))], [The lower GLib version supported])
+
 PKG_CHECK_MODULES(XCB, [xcb])
 
 AC_SUBST(AM_CFLAGS)
