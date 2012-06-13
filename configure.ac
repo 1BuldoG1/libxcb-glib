@@ -1,5 +1,5 @@
 AC_PREREQ([2.65])
-AC_INIT([libxcb-glib],[0.1],[],[])
+AC_INIT([libxcb-glib],[0.1])
 
 AC_CONFIG_HEADERS([include/config.h])
 AC_CONFIG_SRCDIR([src/])
@@ -19,8 +19,6 @@ LT_INIT
 GETTEXT_PACKAGE=$PACKAGE_NAME
 AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"], [Gettext Package])
 AC_SUBST(GETTEXT_PACKAGE)
-dnl Not yet useful
-dnl IT_PROG_INTLTOOL([0.40.0])
 
 AC_PROG_INSTALL
 
@@ -29,7 +27,6 @@ glib_min_version="2.28.0"
 AM_CFLAGS="-Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers"
 AM_LDFLAGS=""
 
-AC_DEFINE([LIBXCB_GLIB_COMPILATION], [1], [Defined during libxcb-glib compilation])
 AC_DEFINE([G_LOG_DOMAIN], ["GXcb"], [GLib log domain])
 
 
