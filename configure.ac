@@ -32,8 +32,7 @@ AM_LDFLAGS=""
 AC_DEFINE([G_LOG_DOMAIN], ["GXcb"], [GLib log domain])
 
 
-AC_ARG_ENABLE(git-version, AS_HELP_STRING([--disable-git-version], [Do not append git version information to the version string]), enable_git_version=$enableval, enable_git_version=yes)
-if test x$enable_git_version = xyes; then
+if test -f .gitignore; then
     AC_DEFINE_UNQUOTED([PACKAGE_VERSION], ["${PACKAGE_VERSION} − `git describe --tags --always`, branch `git describe --tags --always --all | sed -e 's:heads/::'`"], [Full version with git information])
 fi
 
