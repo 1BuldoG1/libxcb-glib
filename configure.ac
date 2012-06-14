@@ -32,8 +32,9 @@ AM_LDFLAGS=""
 AC_DEFINE([G_LOG_DOMAIN], ["GXcb"], [GLib log domain])
 
 
-if test -f .gitignore; then
-    AC_DEFINE_UNQUOTED([PACKAGE_VERSION], ["${PACKAGE_VERSION} − `git describe --tags --always`, branch `git describe --tags --always --all | sed -e 's:heads/::'`"], [Full version with git information])
+if test -d .git; then
+    PACKAGE_VERSION="${PACKAGE_VERSION} − `git describe --tags --always`, branch `git describe --tags --always --all | sed -e 's:heads/::'`"
+    AC_DEFINE_UNQUOTED([PACKAGE_VERSION], ["$PACKAGE_VERSION"], [Full version with git information])
 fi
 
 PKG_CHECK_MODULES(GLIB, [glib-2.0 >= $glib_min_version])
