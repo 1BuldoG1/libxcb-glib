@@ -45,6 +45,7 @@ static gboolean
 _g_xcb_source_prepare(GSource *source, gint *timeout)
 {
     GXcbSource *self = (GXcbSource *)source;
+    xcb_flush(self->connection);
     *timeout = -1;
     return ! g_queue_is_empty(self->queue);
 }
