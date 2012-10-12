@@ -35,7 +35,6 @@ GXcbSource *g_xcb_source_new_for_connection(GMainContext *context, xcb_connectio
 void g_xcb_source_ref(GXcbSource *self);
 void g_xcb_source_unref(GXcbSource *self);
 
-void g_xcb_source_set_error_callback(GXcbSource *source, GXcbErrorCallback callback);
 xcb_connection_t *g_xcb_source_get_connection(GXcbSource *source);
 
 G_END_DECLS
