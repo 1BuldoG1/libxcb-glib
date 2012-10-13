@@ -74,11 +74,13 @@ _g_xcb_source_dispatch(GSource *source, GSourceFunc callback, gpointer user_data
     GXcbSource *self = (GXcbSource *)source;
     xcb_generic_event_t *event;
 
+    gboolean ret;
+
     event = g_queue_pop_head(self->queue);
-    ((GXcbEventCallback)callback)(event, user_data);
+    ret = ((GXcbEventCallback)callback)(event, user_data);
     _g_xcb_source_event_free(event, NULL);
 
-    return TRUE;
+    return ret;
 }
 
 static void

@@ -27,7 +27,7 @@ G_BEGIN_DECLS
 
 typedef struct _GXcbSource GXcbSource;
 
-typedef void (*GXcbEventCallback)(xcb_generic_event_t *event, gpointer user_data);
+typedef gboolean (*GXcbEventCallback)(xcb_generic_event_t *event, gpointer user_data);
 typedef void (*GXcbErrorCallback)(gpointer user_data);
 
 GXcbSource *g_xcb_source_new(GMainContext *context, const gchar *display, gint *screen, GXcbEventCallback callback, gpointer user_data, GDestroyNotify destroy_func);
